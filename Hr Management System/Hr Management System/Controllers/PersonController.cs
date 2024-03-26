@@ -69,14 +69,17 @@ namespace Hr_Management_System.Controllers
         public async Task<IActionResult> Create(CreatePersonViewModel viewModel)
         {
             
-            if (viewModel.IsValid)
-            {
 
                 Person person = new Person()
                 {
                     FirstName = viewModel.FirstName,
                     LastName = viewModel.LastName,
-                    DepartmentId = viewModel.DepartmentId
+                    DepartmentId = viewModel.DepartmentId,
+                    RoleId = viewModel.RoleId,
+                    Payment = viewModel.Payment,
+                    BirthDay = viewModel.BirthDay,
+                    Email = viewModel.Email,
+                    Phone = viewModel.Phone
                 };
                 foreach (var item in viewModel.ProjectId)
                 {
@@ -85,11 +88,20 @@ namespace Hr_Management_System.Controllers
                         Person = person,
                         ProjectID = item
                     }); 
-                    _context.Persons.Add(person);
-                    _context.SaveChanges();
-                }              
-            }
-            return View(viewModel);
+                }
+                foreach (var item in viewModel.SkillId)
+                {
+                    person.PersonSkills.Add(new PersonSkill()
+                    {
+                        Person = person,
+                        SkillID = item
+                    });
+                }
+                _context.Persons.Add(person);
+                _context.SaveChanges();
+            
+            
+            return View(Index);
         }
         // GET: Person/Edit/5
         public async Task<IActionResult> Edit(Guid? id)

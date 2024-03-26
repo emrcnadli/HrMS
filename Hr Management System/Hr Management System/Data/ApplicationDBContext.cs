@@ -24,7 +24,17 @@ namespace Hr_Management_System.Data
                 .HasMany(e => e.PersonProjects)
                 .WithOne(d => d.Project)
                 .OnDelete(DeleteBehavior.SetNull);
-            
+
+            modelBuilder.Entity<Person>()
+                .HasMany(e => e.PersonSkills)
+                .WithOne(d => d.Person)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            modelBuilder.Entity<Skill>()
+                .HasMany(e => e.PersonSkill)
+                .WithOne(d => d.Skill)
+                .OnDelete(DeleteBehavior.SetNull);
+
         }
 
     }

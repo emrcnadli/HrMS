@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hr_Management_System.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20240326140839_initial migration")]
+    [Migration("20240326191217_initial migration")]
     partial class initialmigration
     {
         /// <inheritdoc />
@@ -104,6 +104,27 @@ namespace Hr_Management_System.Migrations
                     b.ToTable("PersonProject");
                 });
 
+            modelBuilder.Entity("Hr_Management_System.Models.Entities.PersonSkills", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PersonID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("SkillID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PersonID");
+
+                    b.HasIndex("SkillID");
+
+                    b.ToTable("PersonSkills");
+                });
+
             modelBuilder.Entity("Hr_Management_System.Models.Entities.Project", b =>
                 {
                     b.Property<Guid>("Id")
@@ -149,21 +170,6 @@ namespace Hr_Management_System.Migrations
                     b.ToTable("Skills");
                 });
 
-            modelBuilder.Entity("PersonSkill", b =>
-                {
-                    b.Property<Guid>("PersonsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("SkillsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("PersonsId", "SkillsId");
-
-                    b.HasIndex("SkillsId");
-
-                    b.ToTable("PersonSkill");
-                });
-
             modelBuilder.Entity("Hr_Management_System.Models.Entities.Person", b =>
                 {
                     b.HasOne("Hr_Management_System.Models.Entities.Department", "Department")
@@ -200,19 +206,21 @@ namespace Hr_Management_System.Migrations
                     b.Navigation("Project");
                 });
 
-            modelBuilder.Entity("PersonSkill", b =>
+            modelBuilder.Entity("Hr_Management_System.Models.Entities.PersonSkills", b =>
                 {
-                    b.HasOne("Hr_Management_System.Models.Entities.Person", null)
-                        .WithMany()
-                        .HasForeignKey("PersonsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Hr_Management_System.Models.Entities.Person", "Person")
+                        .WithMany("PersonSkills")
+                        .HasForeignKey("PersonID")
+                        .OnDelete(DeleteBehavior.SetNull);
 
-                    b.HasOne("Hr_Management_System.Models.Entities.Skill", null)
-                        .WithMany()
-                        .HasForeignKey("SkillsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("Hr_Management_System.Models.Entities.Skill", "Skill")
+                        .WithMany("PersonSkills")
+                        .HasForeignKey("SkillID")
+                        .OnDelete(DeleteBehavior.SetNull);
+
+                    b.Navigation("Person");
+
+                    b.Navigation("Skill");
                 });
 
             modelBuilder.Entity("Hr_Management_System.Models.Entities.Department", b =>
@@ -223,11 +231,18 @@ namespace Hr_Management_System.Migrations
             modelBuilder.Entity("Hr_Management_System.Models.Entities.Person", b =>
                 {
                     b.Navigation("PersonProjects");
+
+                    b.Navigation("PersonSkills");
                 });
 
             modelBuilder.Entity("Hr_Management_System.Models.Entities.Project", b =>
                 {
                     b.Navigation("PersonProjects");
+                });
+
+            modelBuilder.Entity("Hr_Management_System.Models.Entities.Skill", b =>
+                {
+                    b.Navigation("PersonSkills");
                 });
 #pragma warning restore 612, 618
         }

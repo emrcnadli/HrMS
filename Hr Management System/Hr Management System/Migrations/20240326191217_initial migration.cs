@@ -116,27 +116,28 @@ namespace Hr_Management_System.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PersonSkill",
+                name: "PersonSkills",
                 columns: table => new
                 {
-                    PersonsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    SkillsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    SkillID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PersonID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PersonSkill", x => new { x.PersonsId, x.SkillsId });
+                    table.PrimaryKey("PK_PersonSkills", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_PersonSkill_Persons_PersonsId",
-                        column: x => x.PersonsId,
+                        name: "FK_PersonSkills_Persons_PersonID",
+                        column: x => x.PersonID,
                         principalTable: "Persons",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
-                        name: "FK_PersonSkill_Skills_SkillsId",
-                        column: x => x.SkillsId,
+                        name: "FK_PersonSkills_Skills_SkillID",
+                        column: x => x.SkillID,
                         principalTable: "Skills",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateIndex(
@@ -160,9 +161,14 @@ namespace Hr_Management_System.Migrations
                 column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PersonSkill_SkillsId",
-                table: "PersonSkill",
-                column: "SkillsId");
+                name: "IX_PersonSkills_PersonID",
+                table: "PersonSkills",
+                column: "PersonID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonSkills_SkillID",
+                table: "PersonSkills",
+                column: "SkillID");
         }
 
         /// <inheritdoc />
@@ -172,7 +178,7 @@ namespace Hr_Management_System.Migrations
                 name: "PersonProject");
 
             migrationBuilder.DropTable(
-                name: "PersonSkill");
+                name: "PersonSkills");
 
             migrationBuilder.DropTable(
                 name: "Projects");
