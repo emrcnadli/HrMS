@@ -9,6 +9,7 @@ using Hr_Management_System.Data;
 using Hr_Management_System.Models.Entities;
 using Microsoft.Build.Evaluation;
 using Microsoft.CodeAnalysis;
+using Hr_Management_System.Models;
 
 namespace Hr_Management_System.Controllers
 {
@@ -65,32 +66,31 @@ namespace Hr_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Person person, int[] selectedProjects, int selectedDepartment, int selectedRole)
+        public async Task<IActionResult> Create(CreatePersonViewModel viewModel)
         {
-            if (ModelState.IsValid)
+            
+            if (viewModel.IsValid)
             {
-                
-                person.Id = Guid.NewGuid();
 
-
-                person.PersonProjects = new List<PersonProject>();
-                foreach (int ProjectID in selectedProjects)
+                Person person = new Person()
                 {
-                    Models.Entities.Project project = await _context.Projects.FindAsync(ProjectID);
-                    if (project != null)
+                    FirstName = viewModel.FirstName,
+                    LastName = viewModel.LastName,
+                    DepartmentId = viewModel.DepartmentId
+                };
+                foreach (var item in viewModel.ProjectId)
+                {
+                    person.PersonProjects.Add(new PersonProject()
                     {
-                        person.PersonProjects.Add(new PersonProject { Project = project, Person = person });
-                    }
-                }
-                
-                _context.Add(person);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                        Person = person,
+                        ProjectID = item
+                    }); 
+                    _context.Persons.Add(person);
+                    _context.SaveChanges();
+                }              
             }
-            ViewBag.Departments = new SelectList(_context.Departments, "Id", "Name");
-            return View(person);
+            return View(viewModel);
         }
-
         // GET: Person/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {

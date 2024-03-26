@@ -43,8 +43,8 @@ namespace Hr_Management_System.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime>("BirthDay")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("BirthDay")
+                        .HasColumnType("date");
 
                     b.Property<Guid>("DepartmentId")
                         .HasColumnType("uniqueidentifier");
@@ -82,15 +82,21 @@ namespace Hr_Management_System.Migrations
 
             modelBuilder.Entity("Hr_Management_System.Models.Entities.PersonProject", b =>
                 {
-                    b.Property<Guid>("ProjectID")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("PersonID")
+                    b.Property<Guid?>("PersonID")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("ProjectID", "PersonID");
+                    b.Property<Guid?>("ProjectID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
 
                     b.HasIndex("PersonID");
+
+                    b.HasIndex("ProjectID");
 
                     b.ToTable("PersonProject");
                 });
@@ -179,14 +185,12 @@ namespace Hr_Management_System.Migrations
                     b.HasOne("Hr_Management_System.Models.Entities.Person", "Person")
                         .WithMany("PersonProjects")
                         .HasForeignKey("PersonID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("Hr_Management_System.Models.Entities.Project", "Project")
                         .WithMany("PersonProjects")
                         .HasForeignKey("ProjectID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Person");
 

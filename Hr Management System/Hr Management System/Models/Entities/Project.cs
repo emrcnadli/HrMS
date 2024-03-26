@@ -4,7 +4,7 @@
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public ICollection<PersonProject>? PersonProjects { get; set; }
+        public ICollection<PersonProject>? PersonProjects { get; set; } = new List<PersonProject>();
 
     }
 }

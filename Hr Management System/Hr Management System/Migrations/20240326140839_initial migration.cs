@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Hr_Management_System.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class initialmigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -69,7 +69,7 @@ namespace Hr_Management_System.Migrations
                     DepartmentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     RoleId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Payment = table.Column<int>(type: "int", nullable: false),
-                    BirthDay = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    BirthDay = table.Column<DateOnly>(type: "date", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Phone = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -94,24 +94,25 @@ namespace Hr_Management_System.Migrations
                 name: "PersonProject",
                 columns: table => new
                 {
-                    ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    PersonID = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProjectID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    PersonID = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PersonProject", x => new { x.ProjectID, x.PersonID });
+                    table.PrimaryKey("PK_PersonProject", x => x.Id);
                     table.ForeignKey(
                         name: "FK_PersonProject_Persons_PersonID",
                         column: x => x.PersonID,
                         principalTable: "Persons",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_PersonProject_Projects_ProjectID",
                         column: x => x.ProjectID,
                         principalTable: "Projects",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.SetNull);
                 });
 
             migrationBuilder.CreateTable(
@@ -142,6 +143,11 @@ namespace Hr_Management_System.Migrations
                 name: "IX_PersonProject_PersonID",
                 table: "PersonProject",
                 column: "PersonID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PersonProject_ProjectID",
+                table: "PersonProject",
+                column: "ProjectID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Persons_DepartmentId",

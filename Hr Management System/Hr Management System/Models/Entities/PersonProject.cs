@@ -2,9 +2,10 @@
 {
     public class PersonProject
     {
-        public Guid ProjectID { get; set; }
-        public Project Project { get; set; }
-        public Guid PersonID { get; set; }
-        public Person Person { get; set; }
+        public Guid Id { get; set; }
+        public Guid? ProjectID { get; set; }
+        public Project? Project { get; set; }
+        public Guid? PersonID { get; set; }
+        public Person? Person { get; set; }
     }
 }

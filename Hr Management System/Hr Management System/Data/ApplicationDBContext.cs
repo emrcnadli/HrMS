@@ -15,23 +15,16 @@ namespace Hr_Management_System.Data
         public DbSet<Skill> Skills { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<PersonProject>()
-                .HasKey(cs => new { cs.ProjectID, cs.PersonID });
-
-            modelBuilder.Entity<PersonProject>()
-                .HasOne(cs => cs.Project)
-                .WithMany(c => c.PersonProjects)
-                .HasForeignKey(cs => cs.ProjectID);
-
-            modelBuilder.Entity<PersonProject>()
-                .HasOne(cs => cs.Person)
-                .WithMany(s => s.PersonProjects)
-                .HasForeignKey(cs => cs.PersonID);
-            /*
             modelBuilder.Entity<Person>()
-                .HasOne(e => e.Department)
-                .WithMany(d => d.Persons)
-                .HasForeignKey(e => e.DepartmentId);*/
+                .HasMany(e => e.PersonProjects)
+                .WithOne(d => d.Person)
+                .OnDelete(DeleteBehavior.SetNull);
+            
+            modelBuilder.Entity<Project>()
+                .HasMany(e => e.PersonProjects)
+                .WithOne(d => d.Project)
+                .OnDelete(DeleteBehavior.SetNull);
+            
         }
 
     }
