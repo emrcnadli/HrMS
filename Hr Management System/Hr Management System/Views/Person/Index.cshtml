@@ -19,6 +19,12 @@
                 @Html.DisplayNameFor(model => model.LastName)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.PersonProjects)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PersonSkills)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Payment)
             </th>
             <th>
@@ -41,6 +47,18 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @foreach (var project in item.PersonProjects)
+                {
+                    <li>@project.Project.Name</li>
+                }
+            </td>
+            <td>
+                @foreach (var project in item.PersonSkills)
+                {
+                    <li>@project.Skill.Name</li>
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Payment)

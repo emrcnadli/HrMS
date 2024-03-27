@@ -25,7 +25,7 @@ namespace Hr_Management_System.Controllers
         // GET: Person
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Persons.ToListAsync());
+            return View(await _context.Persons.Include(x=>x.PersonProjects).ThenInclude(a=>a.Project).Include(p=>p.PersonSkills).ThenInclude(p=>p.Skill).ToListAsync());
         }
 
         // GET: Person/Details/5
@@ -111,7 +111,11 @@ namespace Hr_Management_System.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Persons.FindAsync(id);
+            var person = _context.Persons.
+                Include(p => p.PersonProjects).
+                ThenInclude(p => p.Project).
+                Include(p => p.PersonSkills).
+                ThenInclude(p => p.Skill).Include(p=>p.Department).Include(p=>p.Role).FirstOrDefault(p=>p.Id == id);
             if (person == null)
             {
                 return NotFound();
