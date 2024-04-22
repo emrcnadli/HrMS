@@ -11,7 +11,6 @@ namespace Hr_Management_System.Models.Entities
         public Guid DepartmentId { get; set; }
         public Department Department { get; set; }
         public ICollection<PersonProject>? PersonProjects { get; set; } = new List<PersonProject>();
-        //public List<Skill> Skills { get; set; }
         public ICollection<PersonSkill>? PersonSkills { get; set; } = new List<PersonSkill>();
         public Guid RoleId { get; set; }
         public Role Role { get; set; }

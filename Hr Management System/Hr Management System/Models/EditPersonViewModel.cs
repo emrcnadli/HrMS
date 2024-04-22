@@ -1,17 +1,21 @@
-﻿namespace Hr_Management_System.Models
+﻿using Hr_Management_System.Models.Entities;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace Hr_Management_System.Models
 {
     public class EditPersonViewModel
     {
-        internal readonly bool IsValid;
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public Guid DepartmentId { get; set; }
-        public List<Guid> SkillId { get; set; }
-        public Guid RoleId { get; set; }
-        public List<Guid> ProjectId { get; set; }
-        public int Payment { get; set; }
-        public DateOnly BirthDay { get; set; }
-        public string Email { get; set; }
-        public string Phone { get; set; }
+        public Person Person { get; set; }
+        public Department Department { get; set; }
+        /*
+        public Skill Skill { get; set; }
+        public Role Role { get; set; }
+        public Project Project { get; set; }
+        */
+
+        
+        public List<Project> Projects { get; set; }
+        public List<Skill> Skills { get; set; }
+
     }
 }
