@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Hr_Management_System.Models.Entities.Department>
+﻿@model List<Hr_Management_System.Features.Departments.Queries.GetAllDepartments.GetAllDepartmentsResponse>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,9 +13,9 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Department Name
             </th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>

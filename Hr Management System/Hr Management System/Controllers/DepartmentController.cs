@@ -7,22 +7,33 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hr_Management_System.Data;
 using Hr_Management_System.Models.Entities;
+using AutoMapper;
+using Hr_Management_System.Models;
+using MediatR;
+using Hr_Management_System.Features.Departments.Queries.GetAllDepartments;
 
 namespace Hr_Management_System.Controllers
 {
     public class DepartmentController : Controller
     {
         private readonly ApplicationDBContext _context;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public DepartmentController(ApplicationDBContext context)
+        public DepartmentController(ApplicationDBContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
+            _mapper = mapper;
+            _mediator = mediator;
         }
 
         // GET: Department
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Departments.ToListAsync());
+            //return View(await _context.Departments.ToListAsync());
+            var response = await _mediator.Send(new GetAllDepartmentsQueryRequest());
+            
+            return View(response);
         }
 
         // GET: Department/Details/5
@@ -54,17 +65,16 @@ namespace Hr_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name")] Department department)
+        public async Task<IActionResult> Create(CreateDepartmentViewModel viewModel)
         {
-            department.Id = Guid.NewGuid();
             if (ModelState.IsValid)
             {
                 
-                _context.Add(department);
+                _context.Add(_mapper.Map<Department>(viewModel));
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(department);
+            return View(viewModel);
         }
 
         // GET: Department/Edit/5

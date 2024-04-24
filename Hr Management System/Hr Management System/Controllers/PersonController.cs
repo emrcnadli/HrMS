@@ -28,7 +28,7 @@ namespace Hr_Management_System.Controllers
             return View(
                 await _context.Persons.Include(x => x.PersonProjects).
                 ThenInclude(a => a.Project).Include(p => p.PersonSkills).
-                ThenInclude(p=>p.Skill).ToListAsync());
+                ThenInclude(p=>p.Skill).Include(x=>x.Department).Include(r=>r.Role).ToListAsync());
         }
 
         // GET: Person/Details/5
@@ -39,8 +39,7 @@ namespace Hr_Management_System.Controllers
                 return NotFound();
             }
 
-            var person = await _context.Persons
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var person = await _context.Persons.FirstOrDefaultAsync(m => m.Id == id);
             if (person == null)
             {
                 return NotFound();
@@ -106,35 +105,51 @@ namespace Hr_Management_System.Controllers
         // GET: Person/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
         {
+            
             if (id == null)
             {
                 return NotFound();
             }
+
             var person = _context.Persons.
                 Include(p => p.PersonProjects).
                 ThenInclude(p => p.Project).
                 Include(p => p.PersonSkills).
                 ThenInclude(p => p.Skill).Include(p=>p.Department).Include(p=>p.Role).FirstOrDefault(p=>p.Id == id);
-
-            var selected_skill = person.PersonSkills.Select(s => s.SkillID).ToList();
-            var skills = _context.Skills.ToList();
             
-            var selected_project = person.PersonProjects.Select(s => s.ProjectID).ToList();
+            var departments = _context.Departments.ToList();
+            var roles = _context.Roles.ToList();
+            var skills = _context.Skills.ToList();
             var projects = _context.Projects.ToList();
-
-            ViewBag.Skills = skills;
-            ViewBag.Projects = projects;
-            //ViewBag.Skills_selected = new MultiSelectList(skills, "SkillId", "Name", selected_skill,"test");
-            //ViewBag.Projects_selected = new MultiSelectList(projects, "ProjectId", "Name", selected_project, "testproject").ToList();
+            
+            var selected_skill = person.PersonSkills.Select(s => s.SkillID).ToList();
+            var selected_project = person.PersonProjects.Select(s => s.ProjectID).ToList();
 
             List<SelectListItem> list_projects = new List<SelectListItem>();
-
             foreach (var item in projects)
             {
                 bool isSelected = selected_project.Contains(item.Id);
                 list_projects.Add(new SelectListItem(item.Name, item.Id.ToString(), isSelected));
             }
             ViewBag.Projects_selected = list_projects;
+
+            List<SelectListItem> list_departments = new List<SelectListItem>();
+
+            foreach (var item in departments)
+            {
+                bool isSelected = person.Department.Name.Equals(item.Name);
+                list_departments.Add(new SelectListItem(item.Name, item.Id.ToString(), isSelected));
+            }
+            ViewBag.Departments_selected = list_departments;
+
+            List<SelectListItem> list_roles = new List<SelectListItem>();
+
+            foreach (var item in roles)
+            {
+                bool isSelected = person.Role.Name.Equals(item.Name);
+                list_roles.Add(new SelectListItem(item.Name, item.Id.ToString(), isSelected));
+            }
+            ViewBag.Roles_selected = list_roles;
             
             List<SelectListItem> list_skills = new List<SelectListItem>();
 
@@ -145,14 +160,12 @@ namespace Hr_Management_System.Controllers
             }
             ViewBag.Skills_selected = list_skills;
 
-
             EditPersonViewModel model = new EditPersonViewModel() {
                 Person = person,
                 Department = person.Department,
-                //Role = person.Role,
+                Role = person.Role,
                 Skills = skills,
                 Projects = projects,
-
             };
             if (person == null)
             {

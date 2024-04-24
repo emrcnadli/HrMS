@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "9UQMm3eQOjvzyXNw5ukS3h6jn0b9MNFOjvGr13t43QPsNEXVbj0aQYMLlbFrrhJtexSCS8cduqpy3VUcZvPvvw==",
+  "dgSpecHash": "IjBKBP8DcX0Od0JDyJrC6q/iBwFYClFJVa9fY8P6NZRd9a8qSP5FcbqWzbwd1DvZPas9eQ6HKhkGjsceMGejcg==",
   "success": true,
   "projectFilePath": "C:\\GIT\\HrMS\\Hr Management System\\Hr Management System\\Hr Management System.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\emrec\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\emrec\\.nuget\\packages\\azure.core\\1.35.0\\azure.core.1.35.0.nupkg.sha512",
     "C:\\Users\\emrec\\.nuget\\packages\\azure.identity\\1.10.3\\azure.identity.1.10.3.nupkg.sha512",
     "C:\\Users\\emrec\\.nuget\\packages\\humanizer\\2.14.1\\humanizer.2.14.1.nupkg.sha512",
@@ -56,6 +57,8 @@
     "C:\\Users\\emrec\\.nuget\\packages\\humanizer.core.zh-cn\\2.14.1\\humanizer.core.zh-cn.2.14.1.nupkg.sha512",
     "C:\\Users\\emrec\\.nuget\\packages\\humanizer.core.zh-hans\\2.14.1\\humanizer.core.zh-hans.2.14.1.nupkg.sha512",
     "C:\\Users\\emrec\\.nuget\\packages\\humanizer.core.zh-hant\\2.14.1\\humanizer.core.zh-hant.2.14.1.nupkg.sha512",
+    "C:\\Users\\emrec\\.nuget\\packages\\mediatr\\12.2.0\\mediatr.12.2.0.nupkg.sha512",
+    "C:\\Users\\emrec\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512",
     "C:\\Users\\emrec\\.nuget\\packages\\microsoft.aspnetcore.authorization\\8.0.3\\microsoft.aspnetcore.authorization.8.0.3.nupkg.sha512",
     "C:\\Users\\emrec\\.nuget\\packages\\microsoft.aspnetcore.components\\8.0.3\\microsoft.aspnetcore.components.8.0.3.nupkg.sha512",
     "C:\\Users\\emrec\\.nuget\\packages\\microsoft.aspnetcore.components.analyzers\\8.0.3\\microsoft.aspnetcore.components.analyzers.8.0.3.nupkg.sha512",

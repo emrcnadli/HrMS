@@ -7,13 +7,7 @@ namespace Hr_Management_System.Models
     {
         public Person Person { get; set; }
         public Department Department { get; set; }
-        /*
-        public Skill Skill { get; set; }
         public Role Role { get; set; }
-        public Project Project { get; set; }
-        */
-
-        
         public List<Project> Projects { get; set; }
         public List<Skill> Skills { get; set; }
 
