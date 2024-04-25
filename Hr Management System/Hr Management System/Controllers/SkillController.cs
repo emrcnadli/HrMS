@@ -8,22 +8,33 @@ using Microsoft.EntityFrameworkCore;
 using Hr_Management_System.Data;
 using Hr_Management_System.Models.Entities;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using AutoMapper;
+using MediatR;
+using Hr_Management_System.Features.Roles.Queries.GetAllQueries;
+using Hr_Management_System.Features.Skills.Queries.GetAllSkills;
 
 namespace Hr_Management_System.Controllers
 {
     public class SkillController : Controller
     {
         private readonly ApplicationDBContext _context;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public SkillController(ApplicationDBContext context)
+        public SkillController(ApplicationDBContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
+            _mapper = mapper;
+            _mediator = mediator;
         }
 
         // GET: Skill
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Skills.ToListAsync());
+            //return View(await _context.Skills.ToListAsync());
+            var response = await _mediator.Send(new GetAllSkillsQueryRequest());
+
+            return View(response);
         }
 
         // GET: Skill/Details/5

@@ -7,22 +7,33 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hr_Management_System.Data;
 using Hr_Management_System.Models.Entities;
+using AutoMapper;
+using MediatR;
+using Hr_Management_System.Features.Departments.Queries.GetAllDepartments;
+using Hr_Management_System.Features.Projects.Queries.GetAllProjects;
 
 namespace Hr_Management_System.Controllers
 {
     public class ProjectController : Controller
     {
         private readonly ApplicationDBContext _context;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public ProjectController(ApplicationDBContext context)
+        public ProjectController(ApplicationDBContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
+            _mapper = mapper;
+            _mediator = mediator;
         }
 
         // GET: Project
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Projects.ToListAsync());
+            //return View(await _context.Projects.ToListAsync());
+            var response = await _mediator.Send(new GetAllProjectsQueryRequest());
+
+            return View(response);
         }
 
         // GET: Project/Details/5
