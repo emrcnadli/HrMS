@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Hr_Management_System.Models.Entities.Role>
+﻿@model List<Hr_Management_System.Features.Roles.Queries.GetAllRoles.GetAllRolesResponse>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,9 +13,9 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Role Name
             </th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>

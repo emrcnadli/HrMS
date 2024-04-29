@@ -1,69 +1,73 @@
-﻿@model Hr_Management_System.Models.Entities.Person
+﻿@model Hr_Management_System.Models.Person.EditPersonViewModel;
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewBag.Title = "Edit";
 }
 
 <h1>Edit</h1>
 
 <h4>Person</h4>
 <hr />
+@using (Html.BeginForm())
+{
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Person.Id" />
             <div class="form-group">
-                <label asp-for="FirstName" class="control-label"></label>
-                <input asp-for="FirstName" class="form-control" />
-                <span asp-validation-for="FirstName" class="text-danger"></span>
+                <label asp-for="Person.FirstName" class="control-label"></label>
+                <input asp-for="Person.FirstName" class="form-control" />
+                <span asp-validation-for="Person.FirstName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="LastName" class="control-label"></label>
-                <input asp-for="LastName" class="form-control" />
-                <span asp-validation-for="LastName" class="text-danger"></span>
+                <label asp-for="Person.LastName" class="control-label"></label>
+                <input asp-for="Person.LastName" class="form-control" />
+                <span asp-validation-for="Person.LastName" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Payment" class="control-label"></label>
-                <input asp-for="Payment" class="form-control" />
-                <span asp-validation-for="Payment" class="text-danger"></span>
+                <label asp-for="Person.Payment" class="control-label"></label>
+                <input asp-for="Person.Payment" class="form-control" />
+                <span asp-validation-for="Person.Payment" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Department.Name" class="control-label"></label>
-                <select asp-for="Department.Name" class="form-control" asp-items="ViewBag.Department"></select>
-                <span asp-validation-for="Department.Name" class="text-danger"></span>
+                    @Html.LabelFor(model => Model.Person.PersonProjects, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <select class="form-control" asp-items="ViewBag.Projects_selected" multiple></select>
+                    </div>
             </div>
             <div class="form-group">
-                @foreach (var project in Model.PersonProjects)
-                {
-                    <select>@project.Project.Name</select>
-                }
+                    @Html.LabelFor(model => Model.Person.PersonSkills, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <select class="form-control" asp-items="ViewBag.Skills_selected" multiple></select>
+                    </div>
+            </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => Model.Person.Department, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <select class="form-control" asp-items="ViewBag.Departments_selected"></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => Model.Person.Role, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        <select class="form-control" asp-items="ViewBag.Roles_selected"></select>
+                    </div>
+                </div>
+            <div class="form-group">
+                <label asp-for="Person.BirthDay" class="control-label"></label>
+                    <input asp-for="Person.BirthDay" class="form-control" />
+                    <span asp-validation-for="Person.BirthDay" class="text-danger"></span>
             </div>
             <div class="form-group">
-                @foreach (var project in Model.PersonSkills)
-                {
-                    <select>@project.Skill.Name</select>
-                }
+                <label asp-for="Person.Email" class="control-label"></label>
+                    <input asp-for="Person.Email" class="form-control" />
+                    <span asp-validation-for="Person.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="RoleId" class="control-label"></label>
-                <select asp-for="RoleId" class="form-control" asp-items="ViewBag.Role"></select>
-                <span asp-validation-for="RoleId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BirthDay" class="control-label"></label>
-                <input asp-for="BirthDay" class="form-control" />
-                <span asp-validation-for="BirthDay" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
+                <label asp-for="Person.Phone" class="control-label"></label>
+                    <input asp-for="Person.Phone" class="form-control" />
+                    <span asp-validation-for="Person.Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
@@ -71,7 +75,7 @@
         </form>
     </div>
 </div>
-
+}
 <div>
     <a asp-action="Index">Back to List</a>
 </div>

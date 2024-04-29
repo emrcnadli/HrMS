@@ -7,22 +7,33 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Hr_Management_System.Data;
 using Hr_Management_System.Models.Entities;
+using AutoMapper;
+using MediatR;
+using Hr_Management_System.Features.Projects.Queries.GetAllProjects;
+using Hr_Management_System.Features.Roles.Queries.GetAllQueries;
 
 namespace Hr_Management_System.Controllers
 {
     public class RoleController : Controller
     {
         private readonly ApplicationDBContext _context;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public RoleController(ApplicationDBContext context)
+        public RoleController(ApplicationDBContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
+            _mapper = mapper;
+            _mediator = mediator;
         }
 
         // GET: Role
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Roles.ToListAsync());
+            //return View(await _context.Roles.ToListAsync());
+            var response = await _mediator.Send(new GetAllRolesQueryRequest());
+
+            return View(response);
         }
 
         // GET: Role/Details/5

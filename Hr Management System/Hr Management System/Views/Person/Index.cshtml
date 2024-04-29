@@ -1,10 +1,10 @@
-﻿@model IEnumerable<Hr_Management_System.Models.Entities.Person>
+﻿@model List<Hr_Management_System.Features.Person.Queries.GetAllPersons.GetAllPersonsResponse>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Person Index";
 }
 
-<h1>Index</h1>
+<h1>Persons Index</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,28 +13,34 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.FirstName)
+                First Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.LastName)
+                Last Name
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PersonProjects)
+                Department
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.PersonSkills)
+                Role
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Payment)
+                Projects
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.BirthDay)
+                Skills
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                Payment
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Phone)
+                Birth Day
+            </th>
+            <th>
+                E-mail
+            </th>
+            <th>
+                Phone
             </th>
             <th></th>
         </tr>
@@ -48,6 +54,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.LastName)
             </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department.Name)
+            </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Role.Name)
+                </td>
             <td>
                 @foreach (var project in item.PersonProjects)
                 {

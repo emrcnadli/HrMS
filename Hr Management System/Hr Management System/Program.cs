@@ -1,12 +1,17 @@
 using Hr_Management_System.Data;
+using Hr_Management_System;
+using Hr_Management_System.Features;
+using Hr_Management_System.MapperProfiles;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("HrMSdb")));
-
+builder.Services.AddAutoMapper(typeof(DepartmentProfile));
+builder.Services.AddApplication();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

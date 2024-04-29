@@ -1,6 +1,6 @@
 ﻿using Hr_Management_System.Models.Entities;
 
-namespace Hr_Management_System.Models
+namespace Hr_Management_System.Models.Person
 {
     public class CreatePersonViewModel
     {

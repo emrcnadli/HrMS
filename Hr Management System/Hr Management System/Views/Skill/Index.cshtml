@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Hr_Management_System.Models.Entities.Skill>
+﻿@model List<Hr_Management_System.Features.Skills.Queries.GetAllSkills.GetAllSkillsResponse>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,9 +13,9 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                Skill Name
             </th>
-            <th></th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
