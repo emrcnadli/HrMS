@@ -11,6 +11,8 @@ using AutoMapper;
 using MediatR;
 using Hr_Management_System.Features.Departments.Queries.GetAllDepartments;
 using Hr_Management_System.Models.Department;
+using Hr_Management_System.Features.Departments.Command;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Hr_Management_System.Controllers
 {
@@ -65,15 +67,25 @@ namespace Hr_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateDepartmentViewModel viewModel)
+        public async Task<IActionResult> Create(CreateDepartmentCommand viewModel)
         {
-            if (ModelState.IsValid)
+            try
             {
-                _context.Add(_mapper.Map<Department>(viewModel));
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    var response = await _mediator.Send(viewModel);
+                    //_context.Add(_mapper.Map<Department>(viewModel));
+                    //await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                return View(viewModel);
             }
-            return View(viewModel);
+            catch (Exception e)
+            {
+                ModelState.AddModelError(string.Empty, e.Message);
+                return View(viewModel);
+            }
+            
         }
 
         // GET: Department/Edit/5

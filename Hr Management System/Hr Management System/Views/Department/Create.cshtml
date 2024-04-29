@@ -3,7 +3,12 @@
 @{
     ViewData["Title"] = "Create";
 }
-
+@if (ViewData.ModelState.ContainsKey(string.Empty))
+{
+    <div class="text-danger">
+        @Html.ValidationMessage(string.Empty)
+    </div>
+}
 <h1>Create</h1>
 
 <h4>Department</h4>
