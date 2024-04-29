@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Departments\Command\" />
+    <Folder Include="Features\Person\Coımmand\" />
     <Folder Include="Features\Projects\Command\" />
     <Folder Include="Features\Roles\Command\" />
     <Folder Include="Features\Skills\Command\" />

@@ -9,26 +9,33 @@ using Hr_Management_System.Data;
 using Hr_Management_System.Models.Entities;
 using Microsoft.Build.Evaluation;
 using Microsoft.CodeAnalysis;
-using Hr_Management_System.Models;
+using Hr_Management_System.Models.Person;
+using Hr_Management_System.Models.Entities;
+using Hr_Management_System.Features.Person.Queries.GetAllPersons;
+using AutoMapper;
+using MediatR;
 
 namespace Hr_Management_System.Controllers
 {
     public class PersonController : Controller
     {
         private readonly ApplicationDBContext _context;
+        private readonly IMapper _mapper;
+        private readonly IMediator _mediator;
 
-        public PersonController(ApplicationDBContext context)
+        public PersonController(ApplicationDBContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
+            _mapper = mapper;
+            _mediator = mediator;
         }
 
         // GET: Person
         public async Task<IActionResult> Index()
         {
-            return View(
-                await _context.Persons.Include(x => x.PersonProjects).
-                ThenInclude(a => a.Project).Include(p => p.PersonSkills).
-                ThenInclude(p=>p.Skill).Include(x=>x.Department).Include(r=>r.Role).ToListAsync());
+            //return View(await _context.Persons.Include(x => x.PersonProjects).ThenInclude(a => a.Project).Include(p => p.PersonSkills).ThenInclude(p=>p.Skill).Include(x=>x.Department).Include(r=>r.Role).ToListAsync());
+            var response = await _mediator.Send(new GetAllPersonsQueryRequest());
+            return View(response);
         }
 
         // GET: Person/Details/5
@@ -159,8 +166,7 @@ namespace Hr_Management_System.Controllers
                 list_skills.Add(new SelectListItem(item.Name, item.Id.ToString(), isSelected));
             }
             ViewBag.Skills_selected = list_skills;
-
-            EditPersonViewModel model = new EditPersonViewModel() {
+            EditPersonViewModel model = new Models.Person.EditPersonViewModel() {
                 Person = person,
                 Department = person.Department,
                 Role = person.Role,

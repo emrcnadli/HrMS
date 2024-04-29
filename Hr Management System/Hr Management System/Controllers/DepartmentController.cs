@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore;
 using Hr_Management_System.Data;
 using Hr_Management_System.Models.Entities;
 using AutoMapper;
-using Hr_Management_System.Models;
 using MediatR;
 using Hr_Management_System.Features.Departments.Queries.GetAllDepartments;
+using Hr_Management_System.Models.Department;
 
 namespace Hr_Management_System.Controllers
 {
@@ -69,7 +69,6 @@ namespace Hr_Management_System.Controllers
         {
             if (ModelState.IsValid)
             {
-                
                 _context.Add(_mapper.Map<Department>(viewModel));
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));

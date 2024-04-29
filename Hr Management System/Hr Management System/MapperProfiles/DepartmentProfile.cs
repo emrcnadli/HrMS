@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Hr_Management_System.Models;
+using Hr_Management_System.Models.Department;
 using Hr_Management_System.Models.Entities;
 
 namespace Hr_Management_System.MapperProfiles
