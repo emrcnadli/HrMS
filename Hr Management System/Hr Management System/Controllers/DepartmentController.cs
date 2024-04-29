@@ -32,7 +32,6 @@ namespace Hr_Management_System.Controllers
         // GET: Department
         public async Task<IActionResult> Index()
         {
-            //return View(await _context.Departments.ToListAsync());
             var response = await _mediator.Send(new GetAllDepartmentsQueryRequest());
             
             return View(response);
@@ -67,15 +66,13 @@ namespace Hr_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateDepartmentCommand viewModel)
+        public async Task<IActionResult> Create(CreateDepartmentViewModel viewModel)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var response = await _mediator.Send(viewModel);
-                    //_context.Add(_mapper.Map<Department>(viewModel));
-                    //await _context.SaveChangesAsync();
+                    var response = await _mediator.Send(_mapper.Map<CreateDepartmentCommand>(viewModel));
                     return RedirectToAction(nameof(Index));
                 }
                 return View(viewModel);

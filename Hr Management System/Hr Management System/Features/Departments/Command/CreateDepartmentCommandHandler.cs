@@ -1,4 +1,6 @@
-﻿using Hr_Management_System.Data;
+﻿using AutoMapper;
+using Hr_Management_System.Data;
+using Hr_Management_System.Models.Department;
 using Hr_Management_System.Models.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -8,9 +10,11 @@ namespace Hr_Management_System.Features.Departments.Command
     public class CreateDepartmentCommandHandler : IRequestHandler<CreateDepartmentCommand, Department>
     {
         private readonly ApplicationDBContext _context;
-        public CreateDepartmentCommandHandler(ApplicationDBContext context)
+        private readonly IMapper _mapper;
+        public CreateDepartmentCommandHandler(ApplicationDBContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
 
@@ -18,15 +22,9 @@ namespace Hr_Management_System.Features.Departments.Command
         {
             if (!await _context.Departments.AnyAsync(d => d.Name == request.Name))
             {
-                //request.Id = Guid.NewGuid();
-                Department department = new Department()
-                {
-                    Name = request.Name,
-                    Id = request.Id,
-                };
-                _context.Add(department);
+                _context.Add(_mapper.Map<Department>(request));
                 await _context.SaveChangesAsync();
-                return department;
+                return _mapper.Map<Department>(request);
             }
             throw new Exception("Department name already exists.");
         }
