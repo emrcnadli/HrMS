@@ -11,6 +11,7 @@ namespace Hr_Management_System.Features.Departments.Command
     {
         private readonly ApplicationDBContext _context;
         private readonly IMapper _mapper;
+        private Department _department;
         public CreateDepartmentCommandHandler(ApplicationDBContext context, IMapper mapper)
         {
             _context = context;
@@ -20,11 +21,12 @@ namespace Hr_Management_System.Features.Departments.Command
 
         public async Task<Department> Handle(CreateDepartmentCommand request, CancellationToken cancellationToken)
         {
+            _department = _mapper.Map<Department>(request);
             if (!await _context.Departments.AnyAsync(d => d.Name == request.Name))
             {
-                _context.Add(_mapper.Map<Department>(request));
+                _context.Add(_department);
                 await _context.SaveChangesAsync();
-                return _mapper.Map<Department>(request);
+                return _department;
             }
             throw new Exception("Department name already exists.");
         }

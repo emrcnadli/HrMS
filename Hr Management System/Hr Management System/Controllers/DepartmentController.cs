@@ -13,6 +13,7 @@ using Hr_Management_System.Features.Departments.Queries.GetAllDepartments;
 using Hr_Management_System.Models.Department;
 using Hr_Management_System.Features.Departments.Command;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Hr_Management_System.Features.Departments.Queries.GetDepartmentById;
 
 namespace Hr_Management_System.Controllers
 {
@@ -86,19 +87,19 @@ namespace Hr_Management_System.Controllers
         }
 
         // GET: Department/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
-
-            var department = await _context.Departments.FindAsync(id);
-            if (department == null)
+            var response = await _mediator.Send(new GetDepartmentByIdQueryRequest(){Id = id});
+            //var department = await _context.Departments.FindAsync(id);
+            if (response == null)
             {
                 return NotFound();
             }
-            return View(department);
+            return View(response);
         }
 
         // POST: Department/Edit/5
