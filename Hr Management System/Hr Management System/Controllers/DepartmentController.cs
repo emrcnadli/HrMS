@@ -16,6 +16,7 @@ using Hr_Management_System.Features.Departments.Queries.GetDepartmentById;
 using Microsoft.VisualStudio.Web.CodeGeneration.DotNet;
 using Hr_Management_System.Features.Departments.Command.CreateDepartment;
 using Hr_Management_System.Features.Departments.Command;
+using Hr_Management_System.Features.Departments.Command.DeleteDepartment;
 
 namespace Hr_Management_System.Controllers
 {
@@ -125,15 +126,15 @@ namespace Hr_Management_System.Controllers
         }
 
         // GET: Department/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.Id == id);
+            
+            var department = await _mediator.Send(new GetDepartmentByIdQueryRequest() { Id = id });
             if (department == null)
             {
                 return NotFound();
@@ -147,13 +148,14 @@ namespace Hr_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var department = await _context.Departments.FindAsync(id);
+            var department = await _mediator.Send(new GetDepartmentByIdQueryRequest() { Id = id });
             if (department != null)
             {
-                _context.Departments.Remove(department);
+                _mediator.Send(new DeleteDepartmentCommand() { Department=department });
+                //_context.Departments.Remove(department);
             }
 
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 

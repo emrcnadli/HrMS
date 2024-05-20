@@ -16,7 +16,7 @@ namespace Hr_Management_System.MapperProfiles
             CreateMap<CreateDepartmentViewModel, CreateDepartmentCommand>().
                 ForMember(d => d.Name, o => o.MapFrom(s => s.Name)).
                 ForMember(d => d.Id, o => o.MapFrom(s => s.Id));
-            CreateMap<CreateDepartmentViewModel, Department>().
+            CreateMap<CreateDepartmentCommand, Department>().
                 ForMember(d => d.Name, o => o.MapFrom(s => s.Name)).
                 ForMember(d => d.Id, o => o.MapFrom(s => s.Id));
             CreateMap<EditDepartmentViewModel, EditDepartmentCommand>().
