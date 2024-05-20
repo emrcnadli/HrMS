@@ -159,9 +159,5 @@ namespace Hr_Management_System.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DepartmentExists(Guid id)
-        {
-            return _context.Departments.Any(e => e.Id == id);
-        }
     }
 }
