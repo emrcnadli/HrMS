@@ -5,7 +5,7 @@ using Hr_Management_System.Models.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
-namespace Hr_Management_System.Features.Departments.Command
+namespace Hr_Management_System.Features.Departments.Command.CreateDepartment
 {
     public class CreateDepartmentCommandHandler : IRequestHandler<CreateDepartmentCommand, Department>
     {
