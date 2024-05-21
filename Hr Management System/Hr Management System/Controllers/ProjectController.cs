@@ -9,8 +9,8 @@ using Hr_Management_System.Data;
 using Hr_Management_System.Models.Entities;
 using AutoMapper;
 using MediatR;
-using Hr_Management_System.Features.Departments.Queries.GetAllDepartments;
 using Hr_Management_System.Features.Projects.Queries.GetAllProjects;
+using Hr_Management_System.Features.Projects.Queries.GetProjectById;
 
 namespace Hr_Management_System.Controllers
 {
@@ -37,21 +37,21 @@ namespace Hr_Management_System.Controllers
         }
 
         // GET: Project/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var project = await _context.Projects
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (project == null)
+            //var response = await _context.Projects.FirstOrDefaultAsync(m => m.Id == id);
+            var response = await _mediator.Send(new GetProjectByIdQueryRequest() { Id = id });
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(project);
+            return View(response);
         }
 
         // GET: Project/Create

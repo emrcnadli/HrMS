@@ -16,7 +16,7 @@ namespace Hr_Management_System.Features.Departments.Queries.GetDepartmentById
 
         public async Task<Department> Handle(GetDepartmentByIdQueryRequest request, CancellationToken cancellationToken)
         {
-            return await _context.Departments.FindAsync(request.Id); ;
+            return await _context.Departments.FindAsync(request.Id);
         }
     }
 }
