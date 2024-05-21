@@ -10,7 +10,8 @@ namespace Hr_Management_System
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddMediatR(cf => cf.RegisterServicesFromAssemblyContaining<GetAllDepartmentsQueryHandler>());
-            
+            services.AddMediatR(cf => cf.RegisterServicesFromAssemblyContaining<GetAllProjectsQueryHandler>());
+
 
             return services;
 

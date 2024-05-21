@@ -11,6 +11,8 @@ using AutoMapper;
 using MediatR;
 using Hr_Management_System.Features.Projects.Queries.GetAllProjects;
 using Hr_Management_System.Features.Projects.Queries.GetProjectById;
+using Hr_Management_System.Models.Project;
+using Hr_Management_System.Features.Projects.Command.CreateProject;
 
 namespace Hr_Management_System.Controllers
 {
@@ -65,33 +67,35 @@ namespace Hr_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Name")] Project project)
+        public async Task<IActionResult> Create(CreateProjectViewModel viewModel)
         {
-            project.Id = Guid.NewGuid();
             if (ModelState.IsValid)
             {
-                
-                _context.Add(project);
-                await _context.SaveChangesAsync();
+                var response = await _mediator.Send(_mapper.Map<CreateProjectCommand>(viewModel));
+                //_context.Add(viewModel);
+                //await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(project);
+            return View(viewModel);
         }
 
         // GET: Project/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var project = await _context.Projects.FindAsync(id);
-            if (project == null)
+            var response = await _mediator.Send(new GetProjectByIdQueryRequest()
+            {
+                Id = id
+            });
+            if (response == null)
             {
                 return NotFound();
             }
-            return View(project);
+            return View(response);
         }
 
         // POST: Project/Edit/5
