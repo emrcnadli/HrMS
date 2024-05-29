@@ -12,6 +12,16 @@ using AutoMapper;
 using MediatR;
 using Hr_Management_System.Features.Roles.Queries.GetAllQueries;
 using Hr_Management_System.Features.Skills.Queries.GetAllSkills;
+using Hr_Management_System.Features.Departments.Queries.GetDepartmentById;
+using Hr_Management_System.Features.Skills.Queries.GetSkillById;
+using Hr_Management_System.Models.Skill;
+using Hr_Management_System.Features.Departments.Command.CreateDepartment;
+using Hr_Management_System.Features.Skills.Command.CreateSkill;
+using Hr_Management_System.Features.Departments.Command;
+using Hr_Management_System.Features.Roles.Command.EditRole;
+using Hr_Management_System.Features.Skills.Command.EditSkill;
+using Hr_Management_System.Features.Departments.Command.DeleteDepartment;
+using Hr_Management_System.Features.Skills.Command.DeleteSkill;
 
 namespace Hr_Management_System.Controllers
 {
@@ -38,21 +48,20 @@ namespace Hr_Management_System.Controllers
         }
 
         // GET: Skill/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var skill = await _context.Skills
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (skill == null)
+            var response = await _mediator.Send(new GetSkillByIdQueryRequest() { Id = id });
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(skill);
+            return View(response);
         }
 
         // GET: Skill/Create
@@ -66,32 +75,30 @@ namespace Hr_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Skill skill)
+        public async Task<IActionResult> Create(CreateSkillViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                skill.Id = Guid.NewGuid();
-                _context.Add(skill);
-                await _context.SaveChangesAsync();
+                var response = await _mediator.Send(_mapper.Map<CreateSkillCommand>(viewModel));
                 return RedirectToAction(nameof(Index));
             }
-            return View(skill);
+            return View(viewModel);
         }
 
         // GET: Skill/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var skill = await _context.Skills.FindAsync(id);
-            if (skill == null)
+            var response = await _mediator.Send(new GetSkillByIdQueryRequest() { Id = id });
+            if (response == null)
             {
                 return NotFound();
             }
-            return View(skill);
+            return View(response);
         }
 
         // POST: Skill/Edit/5
@@ -99,52 +106,36 @@ namespace Hr_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name")] Skill skill)
+        public async Task<IActionResult> Edit(Guid id, EditSkillViewModel viewModel)
         {
-            if (id != skill.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(skill);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!SkillExists(skill.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var response = await _mediator.Send(_mapper.Map<EditSkillCommand>(viewModel));
                 return RedirectToAction(nameof(Index));
             }
-            return View(skill);
+            return View(viewModel);
         }
 
         // GET: Skill/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var skill = await _context.Skills
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (skill == null)
+            var response = await _mediator.Send(new GetSkillByIdQueryRequest() { Id = id });
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(skill);
+            return View(response);
         }
 
         // POST: Skill/Delete/5
@@ -152,19 +143,13 @@ namespace Hr_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var skill = await _context.Skills.FindAsync(id);
+            var skill = await _mediator.Send(new GetSkillByIdQueryRequest() { Id = id });
             if (skill != null)
             {
-                _context.Skills.Remove(skill);
+                _mediator.Send(new DeleteSkillCommand() { Skill = skill });
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool SkillExists(Guid id)
-        {
-            return _context.Skills.Any(e => e.Id == id);
         }
     }
 }

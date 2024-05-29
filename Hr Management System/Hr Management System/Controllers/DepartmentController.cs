@@ -11,8 +11,12 @@ using AutoMapper;
 using MediatR;
 using Hr_Management_System.Features.Departments.Queries.GetAllDepartments;
 using Hr_Management_System.Models.Department;
-using Hr_Management_System.Features.Departments.Command;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using Hr_Management_System.Features.Departments.Queries.GetDepartmentById;
+using Microsoft.VisualStudio.Web.CodeGeneration.DotNet;
+using Hr_Management_System.Features.Departments.Command.CreateDepartment;
+using Hr_Management_System.Features.Departments.Command;
+using Hr_Management_System.Features.Departments.Command.DeleteDepartment;
 
 namespace Hr_Management_System.Controllers
 {
@@ -21,7 +25,6 @@ namespace Hr_Management_System.Controllers
         private readonly ApplicationDBContext _context;
         private readonly IMapper _mapper;
         private readonly IMediator _mediator;
-
         public DepartmentController(ApplicationDBContext context, IMapper mapper, IMediator mediator)
         {
             _context = context;
@@ -38,21 +41,20 @@ namespace Hr_Management_System.Controllers
         }
 
         // GET: Department/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (department == null)
+            var response = await _mediator.Send(new GetDepartmentByIdQueryRequest() { Id = id });
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(department);
+            return View(response);
         }
 
         // GET: Department/Create
@@ -86,19 +88,20 @@ namespace Hr_Management_System.Controllers
         }
 
         // GET: Department/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var department = await _context.Departments.FindAsync(id);
-            if (department == null)
+            //I need only Id of department, that's why I didn't use mapper
+            var response = await _mediator.Send(new GetDepartmentByIdQueryRequest(){Id = id});
+            if (response == null)
             {
                 return NotFound();
             }
-            return View(department);
+            return View(response);
         }
 
         // POST: Department/Edit/5
@@ -106,46 +109,32 @@ namespace Hr_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name")] Department department)
+        public async Task<IActionResult> Edit(Guid id, EditDepartmentViewModel viewModel)
         {
-            if (id != department.Id)
+
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(department);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DepartmentExists(department.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var response = await _mediator.Send(_mapper.Map<EditDepartmentCommand>(viewModel));
                 return RedirectToAction(nameof(Index));
             }
-            return View(department);
+            return View(viewModel);
         }
 
         // GET: Department/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var department = await _context.Departments
-                .FirstOrDefaultAsync(m => m.Id == id);
+            
+            var department = await _mediator.Send(new GetDepartmentByIdQueryRequest() { Id = id });
             if (department == null)
             {
                 return NotFound();
@@ -159,19 +148,16 @@ namespace Hr_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var department = await _context.Departments.FindAsync(id);
+            var department = await _mediator.Send(new GetDepartmentByIdQueryRequest() { Id = id });
             if (department != null)
             {
-                _context.Departments.Remove(department);
+                _mediator.Send(new DeleteDepartmentCommand() { Department=department });
+                //_context.Departments.Remove(department);
             }
 
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DepartmentExists(Guid id)
-        {
-            return _context.Departments.Any(e => e.Id == id);
-        }
     }
 }

@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<ApplicationDBContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("HrMSdb")));
-builder.Services.AddAutoMapper(typeof(DepartmentProfile));
+builder.Services.AddAutoMapper(typeof(DepartmentProfile),typeof(ProjectProfile));
 builder.Services.AddApplication();
 var app = builder.Build();
 
