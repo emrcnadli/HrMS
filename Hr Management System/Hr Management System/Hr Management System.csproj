@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <Folder Include="Features\Person\Coımmand\" />
-    <Folder Include="Features\Roles\Command\" />
+    <Folder Include="Features\Roles\Command\EditRole\" />
     <Folder Include="Features\Skills\Command\" />
   </ItemGroup>
 
