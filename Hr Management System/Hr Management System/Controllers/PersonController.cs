@@ -14,6 +14,8 @@ using Hr_Management_System.Models.Entities;
 using Hr_Management_System.Features.Person.Queries.GetAllPersons;
 using AutoMapper;
 using MediatR;
+using Hr_Management_System.Features.Person.Queries.GetPersonById;
+using Hr_Management_System.Features.Person.Coımmand;
 
 namespace Hr_Management_System.Controllers
 {
@@ -39,14 +41,14 @@ namespace Hr_Management_System.Controllers
         }
 
         // GET: Person/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var person = await _context.Persons.FirstOrDefaultAsync(m => m.Id == id);
+            var person = await _mediator.Send(new GetPersonByIdQueryRequest() { Id = id });
             if (person == null)
             {
                 return NotFound();
@@ -76,6 +78,7 @@ namespace Hr_Management_System.Controllers
         {
             
 
+            /*
                 Person person = new Person()
                 {
                     FirstName = viewModel.FirstName,
@@ -87,6 +90,8 @@ namespace Hr_Management_System.Controllers
                     Email = viewModel.Email,
                     Phone = viewModel.Phone
                 };
+            */
+            /*
                 foreach (var item in viewModel.ProjectId)
                 {
                     person.PersonProjects.Add(new PersonProject()
@@ -103,10 +108,13 @@ namespace Hr_Management_System.Controllers
                         SkillID = item
                     });
                 }
+            */
+            var response = await _mediator.Send(_mapper.Map<CreatePersonCommand>(viewModel));
+                /*
                 _context.Persons.Add(person);
                 _context.SaveChanges();
-            
-            
+            */
+
             return View(Index);
         }
         // GET: Person/Edit/5
