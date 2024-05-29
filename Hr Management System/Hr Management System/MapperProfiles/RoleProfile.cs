@@ -1,33 +1,31 @@
 ﻿using AutoMapper;
-using Hr_Management_System.Models.Project;
+using Hr_Management_System.Features.Roles.Command.CreateRole;
+using Hr_Management_System.Features.Roles.Command.EditRole;
 using Hr_Management_System.Models.Entities;
-using Hr_Management_System.Features.Projects.Command.CreateProject;
-using Hr_Management_System.Features.Projects.Command.EditProject;
-using Microsoft.Build.Evaluation;
-using Project = Hr_Management_System.Models.Entities.Project;
-
+using Hr_Management_System.Models.Role;
 
 namespace Hr_Management_System.MapperProfiles
 {
-    public class ProjectProfile : Profile
+    public class RoleProfile : Profile
     {
-        public ProjectProfile() 
+        public RoleProfile() 
         {
-            CreateMap<CreateProjectViewModel, Project>().
+            CreateMap<CreateRoleCommand, Role>().
                 ForMember(d => d.Name, o => o.MapFrom(s => s.Name)).
                 ForMember(d => d.Id, o => o.MapFrom(s => s.Id));
-            CreateMap<CreateProjectViewModel, CreateProjectCommand>().
+            CreateMap<CreateRoleViewModel, CreateRoleCommand>().
                 ForMember(d => d.Name, o => o.MapFrom(s => s.Name)).
                 ForMember(d => d.Id, o => o.MapFrom(s => s.Id));
-            CreateMap<CreateProjectCommand, Project>().
+            CreateMap<EditRoleCommand, Role>().
                 ForMember(d => d.Name, o => o.MapFrom(s => s.Name)).
                 ForMember(d => d.Id, o => o.MapFrom(s => s.Id));
-            CreateMap<EditProjectViewModel, EditProjectCommand>().
+            CreateMap<EditRoleViewModel, EditRoleCommand>().
                 ForMember(d => d.Name, o => o.MapFrom(s => s.Name)).
                 ForMember(d => d.Id, o => o.MapFrom(s => s.Id));
-            CreateMap<EditProjectCommand, Project>().
+            CreateMap<EditRoleCommand, Role>().
                 ForMember(d => d.Name, o => o.MapFrom(s => s.Name)).
                 ForMember(d => d.Id, o => o.MapFrom(s => s.Id));
         }
+        
     }
 }

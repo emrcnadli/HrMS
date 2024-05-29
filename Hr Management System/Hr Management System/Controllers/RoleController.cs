@@ -11,6 +11,15 @@ using AutoMapper;
 using MediatR;
 using Hr_Management_System.Features.Projects.Queries.GetAllProjects;
 using Hr_Management_System.Features.Roles.Queries.GetAllQueries;
+using Hr_Management_System.Features.Departments.Queries.GetDepartmentById;
+using Hr_Management_System.Features.Roles.Queries.GetRoleById;
+using Hr_Management_System.Models.Role;
+using Hr_Management_System.Features.Departments.Command.CreateDepartment;
+using Hr_Management_System.Features.Roles.Command.CreateRole;
+using Hr_Management_System.Features.Departments.Command;
+using Hr_Management_System.Features.Roles.Command.EditRole;
+using Hr_Management_System.Features.Departments.Command.DeleteDepartment;
+using Hr_Management_System.Features.Roles.Command.DeleteRole;
 
 namespace Hr_Management_System.Controllers
 {
@@ -37,21 +46,20 @@ namespace Hr_Management_System.Controllers
         }
 
         // GET: Role/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var role = await _context.Roles
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (role == null)
+            var response = await _mediator.Send(new GetRoleByIdQueryRequest() { Id = id });
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(role);
+            return View(response);
         }
 
         // GET: Role/Create
@@ -65,32 +73,30 @@ namespace Hr_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Role role)
+        public async Task<IActionResult> Create(CreateRoleViewModel viewModel)
         {
             if (ModelState.IsValid)
             {
-                role.Id = Guid.NewGuid();
-                _context.Add(role);
-                await _context.SaveChangesAsync();
+                var response = await _mediator.Send(_mapper.Map<CreateRoleCommand>(viewModel));
                 return RedirectToAction(nameof(Index));
             }
-            return View(role);
+            return View(viewModel);
         }
 
         // GET: Role/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var role = await _context.Roles.FindAsync(id);
-            if (role == null)
+            var response = await _mediator.Send(new GetRoleByIdQueryRequest() { Id = id });
+            if (response == null)
             {
                 return NotFound();
             }
-            return View(role);
+            return View(response);
         }
 
         // POST: Role/Edit/5
@@ -98,52 +104,36 @@ namespace Hr_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name")] Role role)
+        public async Task<IActionResult> Edit(Guid id, EditRoleViewModel viewModel)
         {
-            if (id != role.Id)
+            if (id != viewModel.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(role);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RoleExists(role.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var response = await _mediator.Send(_mapper.Map<EditRoleCommand>(viewModel));
                 return RedirectToAction(nameof(Index));
             }
-            return View(role);
+            return View(viewModel);
         }
 
         // GET: Role/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var role = await _context.Roles
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (role == null)
+            var response = await _mediator.Send(new GetRoleByIdQueryRequest() { Id = id });
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(role);
+            return View(response);
         }
 
         // POST: Role/Delete/5
@@ -151,19 +141,12 @@ namespace Hr_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var role = await _context.Roles.FindAsync(id);
+            var role = await _mediator.Send(new GetRoleByIdQueryRequest() { Id = id });
             if (role != null)
             {
-                _context.Roles.Remove(role);
+                _mediator.Send(new DeleteRoleCommnand() { Role = role });
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool RoleExists(Guid id)
-        {
-            return _context.Roles.Any(e => e.Id == id);
         }
     }
 }
