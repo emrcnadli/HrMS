@@ -18,7 +18,23 @@ namespace Hr_Management_System.Features.Person.Coımmand
         }
         public async Task<Models.Entities.Person> Handle(CreatePersonCommand request, CancellationToken cancellationToken)
         {
-            _person = _mapper.Map<Models.Entities.Person>(request);
+            Models.Entities.Person _person = _mapper.Map<Models.Entities.Person>(request);
+            foreach (var item in request.ProjectId)
+            {
+                _person.PersonProjects.Add(new PersonProject()
+                {
+                    Person = _person,
+                    ProjectID = item
+                });
+            }
+            foreach (var item in request.SkillId)
+            {
+                _person.PersonSkills.Add(new PersonSkill()
+                {
+                    Person = _person,
+                    SkillID = item
+                });
+            }
             _context.Persons.Add(_person);
             _context.SaveChanges();
             return _person;

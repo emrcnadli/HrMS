@@ -110,12 +110,12 @@ namespace Hr_Management_System.Controllers
                 }
             */
             var response = await _mediator.Send(_mapper.Map<CreatePersonCommand>(viewModel));
-                /*
-                _context.Persons.Add(person);
-                _context.SaveChanges();
-            */
+            /*
+            _context.Persons.Add(person);
+            _context.SaveChanges();
+        */
 
-            return View(Index);
+            return RedirectToAction(nameof(Index));
         }
         // GET: Person/Edit/5
         public async Task<IActionResult> Edit(Guid? id)
