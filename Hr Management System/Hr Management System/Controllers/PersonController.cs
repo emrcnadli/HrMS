@@ -171,7 +171,7 @@ namespace Hr_Management_System.Controllers
                 _mediator.Send(new EditPersonCommand { Person = viewModel.Person });
                 return RedirectToAction(nameof(Index));
             }
-            return View(Index);
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Person/Delete/5

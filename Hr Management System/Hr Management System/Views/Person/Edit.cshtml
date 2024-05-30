@@ -31,25 +31,25 @@
                 <span asp-validation-for="Person.Payment" class="text-danger"></span>
             </div>
             <div class="form-group">
-                    @Html.LabelFor(model => Model.Person.PersonProjects, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => Model.Projects, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         <select class="form-control" asp-items="ViewBag.Projects_selected" multiple></select>
                     </div>
             </div>
             <div class="form-group">
-                    @Html.LabelFor(model => Model.Person.PersonSkills, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => Model.Skills, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         <select class="form-control" asp-items="ViewBag.Skills_selected" multiple></select>
                     </div>
             </div>
                 <div class="form-group">
-                    @Html.LabelFor(model => Model.Person.Department, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => Model.Department, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         <select class="form-control" asp-items="ViewBag.Departments_selected"></select>
                     </div>
                 </div>
                 <div class="form-group">
-                    @Html.LabelFor(model => Model.Person.Role, htmlAttributes: new { @class = "control-label col-md-2" })
+                    @Html.LabelFor(model => Model.Role, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
                         <select class="form-control" asp-items="ViewBag.Roles_selected"></select>
                     </div>
