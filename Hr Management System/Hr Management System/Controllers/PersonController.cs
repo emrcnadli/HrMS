@@ -16,6 +16,10 @@ using AutoMapper;
 using MediatR;
 using Hr_Management_System.Features.Person.Queries.GetPersonById;
 using Hr_Management_System.Features.Person.Coımmand;
+using Hr_Management_System.Features.Departments.Command.DeleteDepartment;
+using Hr_Management_System.Features.Departments.Queries.GetDepartmentById;
+using Hr_Management_System.Features.Person.Coımmand.DeletePerson;
+using Hr_Management_System.Features.Person.Coımmand.EditPerson;
 
 namespace Hr_Management_System.Controllers
 {
@@ -35,7 +39,6 @@ namespace Hr_Management_System.Controllers
         // GET: Person
         public async Task<IActionResult> Index()
         {
-            //return View(await _context.Persons.Include(x => x.PersonProjects).ThenInclude(a => a.Project).Include(p => p.PersonSkills).ThenInclude(p=>p.Skill).Include(x=>x.Department).Include(r=>r.Role).ToListAsync());
             var response = await _mediator.Send(new GetAllPersonsQueryRequest());
             return View(response);
         }
@@ -76,49 +79,12 @@ namespace Hr_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreatePersonViewModel viewModel)
         {
-            
 
-            /*
-                Person person = new Person()
-                {
-                    FirstName = viewModel.FirstName,
-                    LastName = viewModel.LastName,
-                    DepartmentId = viewModel.DepartmentId,
-                    RoleId = viewModel.RoleId,
-                    Payment = viewModel.Payment,
-                    BirthDay = viewModel.BirthDay,
-                    Email = viewModel.Email,
-                    Phone = viewModel.Phone
-                };
-            */
-            /*
-                foreach (var item in viewModel.ProjectId)
-                {
-                    person.PersonProjects.Add(new PersonProject()
-                    {
-                        Person = person,
-                        ProjectID = item
-                    }); 
-                }
-                foreach (var item in viewModel.SkillId)
-                {
-                    person.PersonSkills.Add(new PersonSkill()
-                    {
-                        Person = person,
-                        SkillID = item
-                    });
-                }
-            */
             var response = await _mediator.Send(_mapper.Map<CreatePersonCommand>(viewModel));
-            /*
-            _context.Persons.Add(person);
-            _context.SaveChanges();
-        */
-
             return RedirectToAction(nameof(Index));
         }
         // GET: Person/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             
             if (id == null)
@@ -193,46 +159,30 @@ namespace Hr_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,FirstName,LastName,Payment,BirthDay,Email,Phone")] Person person)
+        public async Task<IActionResult> Edit(Guid id,  EditPersonViewModel viewModel)
         {
-            if (id != person.Id)
+            if (id != viewModel.Person.Id)
             {
                 return NotFound();
             }
 
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(person);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PersonExists(person.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _mediator.Send(new EditPersonCommand { Person = viewModel.Person });
                 return RedirectToAction(nameof(Index));
             }
-            return View(person);
+            return View(Index);
         }
 
         // GET: Person/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var person = await _context.Persons
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var person = await _mediator.Send(new GetPersonByIdQueryRequest() { Id = id });
             if (person == null)
             {
                 return NotFound();
@@ -246,19 +196,20 @@ namespace Hr_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var person = await _context.Persons.FindAsync(id);
+            var person = await _mediator.Send(new GetPersonByIdQueryRequest() { Id = id });
             if (person != null)
             {
-                _context.Persons.Remove(person);
+                _mediator.Send(new DeletePersonCommand() { Person = person });
+                //_context.Departments.Remove(department);
             }
 
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
         private bool PersonExists(Guid id)
         {
             return _context.Persons.Any(e => e.Id == id);
         }
+
     }
 }
