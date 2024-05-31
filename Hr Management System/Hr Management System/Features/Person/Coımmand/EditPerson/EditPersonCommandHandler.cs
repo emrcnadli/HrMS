@@ -2,6 +2,7 @@
 using Hr_Management_System.Data;
 using Hr_Management_System.Models.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hr_Management_System.Features.Person.Coımmand.EditPerson
@@ -17,17 +18,19 @@ namespace Hr_Management_System.Features.Person.Coımmand.EditPerson
         }
         public async Task<Models.Entities.Person> Handle(EditPersonCommand request, CancellationToken cancellationToken)
         {
+            var person = new Models.Entities.Person();
             try
             {
-                _context.Update(request.Person);
-                await _context.SaveChangesAsync();
-                return request.Person;
+                
+                _context.Update(request);
+                var response = await _context.SaveChangesAsync();
+                return person;
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!PersonExists(request.Person.Id))
+                if (!PersonExists(request.id))
                 {
-                    return request.Person;
+                    return person;
                 }
                 else
                 {

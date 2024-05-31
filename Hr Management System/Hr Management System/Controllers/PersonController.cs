@@ -112,6 +112,7 @@ namespace Hr_Management_System.Controllers
                 bool isSelected = selected_project.Contains(item.Id);
                 list_projects.Add(new SelectListItem(item.Name, item.Id.ToString(), isSelected));
             }
+            
             ViewBag.Projects_selected = list_projects;
 
             List<SelectListItem> list_departments = new List<SelectListItem>();
@@ -141,11 +142,18 @@ namespace Hr_Management_System.Controllers
             }
             ViewBag.Skills_selected = list_skills;
             EditPersonViewModel model = new Models.Person.EditPersonViewModel() {
-                Person = person,
-                Department = person.Department,
-                Role = person.Role,
-                Skills = skills,
-                Projects = projects,
+                FirstName = person.FirstName,
+                LastName = person.LastName,
+                DepartmentId = list_departments,
+                SkillId = list_skills,
+                RoleId = list_roles,
+                ProjectId = list_projects,
+                Payment = person.Payment,
+                Email = person.Email,
+                Phone  = person.Phone,
+                BirthDay = person.BirthDay,
+
+
             };
             if (person == null)
             {
@@ -161,14 +169,21 @@ namespace Hr_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id,  EditPersonViewModel viewModel)
         {
-            if (id != viewModel.Person.Id)
-            {
-                return NotFound();
-            }
+
 
             if (ModelState.IsValid)
             {
-                _mediator.Send(new EditPersonCommand { Person = viewModel.Person });
+                _mediator.Send(new EditPersonCommand {
+                    FirstName = viewModel.FirstName,
+                    LastName = viewModel.LastName,
+                    DepartmentId = viewModel.DepartmentId,
+                    SkillId = viewModel.SkillId,
+                    RoleId = viewModel.RoleId,
+                    ProjectId = viewModel.ProjectId,
+                    Payment = viewModel.Payment,
+                    Email = viewModel.Email,
+                    Phone = viewModel.Phone,
+                });
                 return RedirectToAction(nameof(Index));
             }
             return RedirectToAction(nameof(Index));
