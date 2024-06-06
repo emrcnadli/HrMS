@@ -1,7 +1,7 @@
 ﻿using Hr_Management_System.Models.Entities;
 using MediatR;
 
-namespace Hr_Management_System.Features.Person.Coımmand
+namespace Hr_Management_System.Features.Person.Commmand
 {
     public class CreatePersonCommand : IRequest<Models.Entities.Person>//TRy with ViewModel
     {

@@ -16,6 +16,18 @@ using AutoMapper;
 using MediatR;
 using Hr_Management_System.Features.Person.Queries.GetPersonById;
 using Hr_Management_System.Features.Person.Coımmand;
+using Hr_Management_System.Features.Departments.Command.DeleteDepartment;
+using Hr_Management_System.Features.Departments.Queries.GetDepartmentById;
+using Hr_Management_System.Features.Person.Coımmand.DeletePerson;
+using Hr_Management_System.Features.Person.Coımmand.EditPerson;
+using Hr_Management_System.Features.Person.Commmand;
+using Hr_Management_System.Features.Departments.Queries.GetAllDepartments;
+using Hr_Management_System.Features.Roles.Queries.GetAllQueries;
+using Hr_Management_System.Features.Skills.Queries.GetAllSkills;
+using Hr_Management_System.Features.Projects.Queries.GetAllProjects;
+using Hr_Management_System.Features.Person.Queries.GetPersonForEdit;
+using Hr_Management_System.Features.Projects.Queries.GetProjectById;
+using Hr_Management_System.Features.Skills.Queries.GetSkillById;
 
 namespace Hr_Management_System.Controllers
 {
@@ -35,7 +47,6 @@ namespace Hr_Management_System.Controllers
         // GET: Person
         public async Task<IActionResult> Index()
         {
-            //return View(await _context.Persons.Include(x => x.PersonProjects).ThenInclude(a => a.Project).Include(p => p.PersonSkills).ThenInclude(p=>p.Skill).Include(x=>x.Department).Include(r=>r.Role).ToListAsync());
             var response = await _mediator.Send(new GetAllPersonsQueryRequest());
             return View(response);
         }
@@ -76,67 +87,26 @@ namespace Hr_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreatePersonViewModel viewModel)
         {
-            
 
-            /*
-                Person person = new Person()
-                {
-                    FirstName = viewModel.FirstName,
-                    LastName = viewModel.LastName,
-                    DepartmentId = viewModel.DepartmentId,
-                    RoleId = viewModel.RoleId,
-                    Payment = viewModel.Payment,
-                    BirthDay = viewModel.BirthDay,
-                    Email = viewModel.Email,
-                    Phone = viewModel.Phone
-                };
-            */
-            /*
-                foreach (var item in viewModel.ProjectId)
-                {
-                    person.PersonProjects.Add(new PersonProject()
-                    {
-                        Person = person,
-                        ProjectID = item
-                    }); 
-                }
-                foreach (var item in viewModel.SkillId)
-                {
-                    person.PersonSkills.Add(new PersonSkill()
-                    {
-                        Person = person,
-                        SkillID = item
-                    });
-                }
-            */
             var response = await _mediator.Send(_mapper.Map<CreatePersonCommand>(viewModel));
-            /*
-            _context.Persons.Add(person);
-            _context.SaveChanges();
-        */
-
             return RedirectToAction(nameof(Index));
         }
         // GET: Person/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            
+
             if (id == null)
             {
                 return NotFound();
             }
 
-            var person = _context.Persons.
-                Include(p => p.PersonProjects).
-                ThenInclude(p => p.Project).
-                Include(p => p.PersonSkills).
-                ThenInclude(p => p.Skill).Include(p=>p.Department).Include(p=>p.Role).FirstOrDefault(p=>p.Id == id);
-            
-            var departments = _context.Departments.ToList();
-            var roles = _context.Roles.ToList();
-            var skills = _context.Skills.ToList();
-            var projects = _context.Projects.ToList();
-            
+            var person = await _mediator.Send(new GetPersonForEditByIdQueryRequest() { Id = id }) ;
+
+            var departments = await _mediator.Send(new GetAllDepartmentsQueryRequest());
+            var roles = await _mediator.Send(new GetAllRolesQueryRequest());
+            var skills = await _mediator.Send(new GetAllSkillsQueryRequest());
+            var projects = await _mediator.Send( new GetAllProjectsQueryRequest());
+
             var selected_skill = person.PersonSkills.Select(s => s.SkillID).ToList();
             var selected_project = person.PersonProjects.Select(s => s.ProjectID).ToList();
 
@@ -146,7 +116,7 @@ namespace Hr_Management_System.Controllers
                 bool isSelected = selected_project.Contains(item.Id);
                 list_projects.Add(new SelectListItem(item.Name, item.Id.ToString(), isSelected));
             }
-            ViewBag.Projects_selected = list_projects;
+            ViewBag.ProjectIds = list_projects;
 
             List<SelectListItem> list_departments = new List<SelectListItem>();
 
@@ -155,7 +125,7 @@ namespace Hr_Management_System.Controllers
                 bool isSelected = person.Department.Name.Equals(item.Name);
                 list_departments.Add(new SelectListItem(item.Name, item.Id.ToString(), isSelected));
             }
-            ViewBag.Departments_selected = list_departments;
+            ViewBag.DepartmentId = list_departments;
 
             List<SelectListItem> list_roles = new List<SelectListItem>();
 
@@ -164,8 +134,8 @@ namespace Hr_Management_System.Controllers
                 bool isSelected = person.Role.Name.Equals(item.Name);
                 list_roles.Add(new SelectListItem(item.Name, item.Id.ToString(), isSelected));
             }
-            ViewBag.Roles_selected = list_roles;
-            
+            ViewBag.RoleId = list_roles;
+
             List<SelectListItem> list_skills = new List<SelectListItem>();
 
             foreach (var item in skills)
@@ -173,13 +143,22 @@ namespace Hr_Management_System.Controllers
                 bool isSelected = selected_skill.Contains(item.Id);
                 list_skills.Add(new SelectListItem(item.Name, item.Id.ToString(), isSelected));
             }
-            ViewBag.Skills_selected = list_skills;
-            EditPersonViewModel model = new Models.Person.EditPersonViewModel() {
-                Person = person,
+            ViewBag.SkillIds = list_skills;
+            EditPersonViewModel model = new Models.Person.EditPersonViewModel()
+            {
+                Id = person.Id,
+                FirstName = person.FirstName,
+                LastName = person.LastName,
                 Department = person.Department,
+                DepartmentId = person.DepartmentId,
+                PersonProjects = person.PersonProjects,
+                PersonSkills = person.PersonSkills,
+                RoleId = person.RoleId,
                 Role = person.Role,
-                Skills = skills,
-                Projects = projects,
+                Phone = person.Phone,
+                BirthDay = person.BirthDay,
+                Email = person.Email,
+                Payment = person.Payment
             };
             if (person == null)
             {
@@ -193,46 +172,35 @@ namespace Hr_Management_System.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,FirstName,LastName,Payment,BirthDay,Email,Phone")] Person person)
+        public async Task<IActionResult> Edit(
+            Guid id,
+            [Bind("Id,FirstName,LastName,DepartmentId,RoleId,Payment,BirthDay,Email,Phone, SelectedProjectIds, SelectedSkillIds")] EditPersonViewModel person
+            )
         {
             if (id != person.Id)
             {
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(person);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PersonExists(person.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                var response = await _mediator.Send(_mapper.Map<EditPersonCommand>(person));
+                   
+            }catch (Exception ex) { }
+                
                 return RedirectToAction(nameof(Index));
-            }
-            return View(person);
+;
         }
 
         // GET: Person/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var person = await _context.Persons
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var person = await _mediator.Send(new GetPersonByIdQueryRequest() { Id = id });
             if (person == null)
             {
                 return NotFound();
@@ -246,19 +214,20 @@ namespace Hr_Management_System.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var person = await _context.Persons.FindAsync(id);
+            var person = await _mediator.Send(new GetPersonByIdQueryRequest() { Id = id });
             if (person != null)
             {
-                _context.Persons.Remove(person);
+                _mediator.Send(new DeletePersonCommand() { Person = person });
+                //_context.Departments.Remove(department);
             }
 
-            await _context.SaveChangesAsync();
+            //await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
-
         private bool PersonExists(Guid id)
         {
             return _context.Persons.Any(e => e.Id == id);
         }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Hr_Management_System.Data;
+using Hr_Management_System.Features.Person.Commmand;
 using Hr_Management_System.Models.Entities;
 using MediatR;
 using System;
