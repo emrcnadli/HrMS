@@ -26,7 +26,6 @@ namespace Hr_Management_System.Features.Person.Coımmand.EditPerson
         public async Task<Models.Entities.Person> Handle(EditPersonCommand request, CancellationToken cancellationToken)
         {
             var existingPerson = await _mediator.Send(new GetPersonForEditByIdQueryRequest() { Id = request.Id });
-            existingPerson.Id = request.Id;
             existingPerson.FirstName = request.FirstName;
             existingPerson.LastName = request.LastName;
             existingPerson.DepartmentId = request.DepartmentId;

@@ -184,70 +184,8 @@ namespace Hr_Management_System.Controllers
 
             try
             {
-                var response = await _mediator.Send(new EditPersonCommand()
-                {
-                    Id = person.Id,
-                    FirstName = person.FirstName,
-                    LastName = person.LastName,
-                    Department = person.Department,
-                    DepartmentId = person.DepartmentId,
-                    PersonProjects = person.PersonProjects,
-                    PersonSkills = person.PersonSkills,
-                    RoleId = person.RoleId,
-                    Role = person.Role,
-                    Phone = person.Phone,
-                    BirthDay = person.BirthDay,
-                    Email = person.Email,
-                    Payment = person.Payment,
-                    SelectedProjectIds = person.SelectedProjectIds,
-                    SelectedSkillIds = person.SelectedSkillIds
-
-                });
-                /*
-                var existingPerson = await _mediator.Send(new GetPersonForEditByIdQueryRequest() { Id = id });
-
-                existingPerson.FirstName = person.FirstName;
-                existingPerson.LastName = person.LastName;
-                existingPerson.DepartmentId = person.DepartmentId;
-                existingPerson.RoleId = person.RoleId;
-                
-                existingPerson.PersonProjects.Clear();
-                foreach (var projectId in person.SelectedProjectIds)
-                {
-                    var project = await _mediator.Send(new GetProjectByIdQueryRequest()
-                    {Id = projectId,});
-                    existingPerson.PersonProjects.Add(new PersonProject()
-                    {
-                        Person = existingPerson,
-                        ProjectID = project.Id
-                    });
-                }
-
-                existingPerson.PersonSkills.Clear();
-                foreach (var skillId in person.SelectedSkillIds)
-                {
-                    var skill = await _mediator.Send(new GetSkillByIdQueryRequest(){ Id = skillId });
-                    existingPerson.PersonSkills.Add(new PersonSkill()
-                    {
-                        Person = existingPerson,
-                        SkillID = skill.Id
-                    });
-                }
-
-                _context.Update(existingPerson);
-                await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PersonExists(person.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                */
+                var response = await _mediator.Send(_mapper.Map<EditPersonCommand>(person));
+                   
             }catch (Exception ex) { }
                 
                 return RedirectToAction(nameof(Index));
